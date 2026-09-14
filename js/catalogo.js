@@ -13,6 +13,7 @@
 import { obtenerProductos, obtenerProductoPorId } from './datos/repositorioProductos.js';
 import { agregarAlCarrito } from './carrito.js';
 import { formatearPrecio } from './ui/formato.js';
+import { normalizarTexto, terminoDeLaUrl } from './busqueda.js';
 
 /** Escapa el texto que se inserta como atributo o contenido HTML. */
 function escapar(texto) {
@@ -39,7 +40,7 @@ function plantillaTarjeta(producto) {
     const nombre = escapar(producto.nombre);
     const id     = escapar(producto.id);
 
-    return '<article class="card product-card categoria-' + escapar(producto.categoria) + '" data-category="' + escapar(producto.categoria) + '">' +
+    return '<article class="card product-card categoria-' + escapar(producto.categoria) + '" data-category="' + escapar(producto.categoria) + '" data-product-id="' + id + '">' +
         '<div class="card-image">' +
             '<img src="' + escapar(producto.imagen) + '" alt="' + nombre + '">' +
         '</div>' +
@@ -53,15 +54,37 @@ function plantillaTarjeta(producto) {
 }
 
 /* ============================================
-   FILTRO POR CATEGORÍA
+   FILTRO POR CATEGORÍA Y BÚSQUEDA
    ============================================ */
 
 let categoriaActiva = 'todos';
+let terminoBusqueda = '';
 
+/**
+ * Texto normalizado de cada producto, por id.
+ * Se calcula una vez al dibujar en lugar de en cada pulsación de tecla.
+ * La búsqueda mira nombre, descripción y materiales.
+ */
+const textoBuscable = new Map();
+
+function indexarParaBusqueda(productos) {
+    textoBuscable.clear();
+    productos.forEach(function (producto) {
+        textoBuscable.set(
+            producto.id,
+            normalizarTexto([producto.nombre, producto.descripcion, producto.materiales].join(' '))
+        );
+    });
+}
+
+/** Los dos criterios se combinan: una tarjeta debe cumplir ambos. */
 function aplicarFiltros(contenedor) {
     contenedor.querySelectorAll('.product-card').forEach(function (tarjeta) {
-        const coincide = categoriaActiva === 'todos' || tarjeta.dataset.category === categoriaActiva;
-        tarjeta.style.display = coincide ? 'block' : 'none';
+        const coincideCategoria = categoriaActiva === 'todos' || tarjeta.dataset.category === categoriaActiva;
+        const coincideBusqueda  = terminoBusqueda === '' ||
+            (textoBuscable.get(tarjeta.dataset.productId) || '').includes(terminoBusqueda);
+
+        tarjeta.style.display = (coincideCategoria && coincideBusqueda) ? 'block' : 'none';
     });
 }
 
@@ -75,6 +98,42 @@ function iniciarFiltros(contenedor) {
             categoriaActiva = this.getAttribute('data-filter');
             aplicarFiltros(contenedor);
         });
+    });
+}
+
+/**
+ * Refleja el término en la URL sin agregar entradas al historial, para que
+ * el botón Atrás no tenga que deshacer letra por letra.
+ */
+function sincronizarUrl(termino) {
+    const url = new URL(window.location.href);
+    if (termino) {
+        url.searchParams.set('q', termino);
+    } else {
+        url.searchParams.delete('q');
+    }
+    history.replaceState(null, '', url);
+}
+
+function iniciarBuscador(contenedor) {
+    const input = document.getElementById('buscador');
+    if (!input) return;
+
+    function buscar() {
+        terminoBusqueda = normalizarTexto(input.value);
+        aplicarFiltros(contenedor);
+        sincronizarUrl(input.value.trim());
+    }
+
+    /* En vivo, sin recargar. */
+    input.addEventListener('input', buscar);
+
+    /* Enter no debe enviar nada ni recargar: aquí ya estamos en el catálogo. */
+    input.addEventListener('keydown', function (evento) {
+        if (evento.key === 'Enter') {
+            evento.preventDefault();
+            buscar();
+        }
     });
 }
 
@@ -242,8 +301,20 @@ export async function iniciarCatalogo() {
     iniciarBotonDelModal();
     iniciarDelegacion(contenedor);
     iniciarFiltros(contenedor);
+    iniciarBuscador(contenedor);
+
+    /* El término llega en la URL cuando se busca desde otra página.
+       Se aplica antes de dibujar, para que el primer pintado ya venga
+       filtrado, y se refleja en el input para que se vea qué se buscó. */
+    const terminoInicial = terminoDeLaUrl();
+    const input = document.getElementById('buscador');
+    if (terminoInicial && input) {
+        input.value = terminoInicial;
+        terminoBusqueda = normalizarTexto(terminoInicial);
+    }
 
     const productos = await obtenerProductos();
+    indexarParaBusqueda(productos);
     contenedor.innerHTML = productos.map(plantillaTarjeta).join('');
 
     observarTarjetas(contenedor);
