@@ -32,3 +32,29 @@
     animation: btnBounce 0.4s ease;
     background-color: #3D5A80;
 }
+
+/* ══ SIN RESULTADOS ══ */
+/* Ocupa el ancho completo de la cuadrícula, no una celda. */
+.catalogo-sin-resultados {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+}
+.catalogo-sin-resultados p {
+    font-size: 18px;
+    color: #666666;
+    margin-bottom: 20px;
+}
+.btn-limpiar-filtros {
+    background-color: #3D5A80;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'Roboto', Arial, sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.btn-limpiar-filtros:hover { background-color: #2C4466; }

@@ -79,13 +79,67 @@ function indexarParaBusqueda(productos) {
 
 /** Los dos criterios se combinan: una tarjeta debe cumplir ambos. */
 function aplicarFiltros(contenedor) {
+    let visibles = 0;
+
     contenedor.querySelectorAll('.product-card').forEach(function (tarjeta) {
         const coincideCategoria = categoriaActiva === 'todos' || tarjeta.dataset.category === categoriaActiva;
         const coincideBusqueda  = terminoBusqueda === '' ||
             (textoBuscable.get(tarjeta.dataset.productId) || '').includes(terminoBusqueda);
 
-        tarjeta.style.display = (coincideCategoria && coincideBusqueda) ? 'block' : 'none';
+        const mostrar = coincideCategoria && coincideBusqueda;
+        tarjeta.style.display = mostrar ? 'block' : 'none';
+        if (mostrar) visibles++;
     });
+
+    mostrarSinResultados(contenedor, visibles === 0);
+}
+
+/* ============================================
+   ESTADO SIN RESULTADOS
+   ============================================ */
+
+/**
+ * Cuando la combinación de búsqueda y categoría no deja nada, se explica por
+ * qué en lugar de dejar una cuadrícula vacía sin más.
+ */
+function crearAvisoSinResultados(contenedor) {
+    const aviso = document.createElement('div');
+    aviso.className = 'catalogo-sin-resultados';
+    aviso.id = 'sinResultados';
+    aviso.style.display = 'none';
+
+    const texto = document.createElement('p');
+    texto.textContent = 'No encontramos muebles que coincidan con tu búsqueda.';
+
+    const boton = document.createElement('button');
+    boton.type = 'button';
+    boton.className = 'btn-limpiar-filtros';
+    boton.textContent = 'Limpiar filtros';
+    boton.addEventListener('click', function () { limpiarFiltros(contenedor); });
+
+    aviso.appendChild(texto);
+    aviso.appendChild(boton);
+    contenedor.appendChild(aviso);
+}
+
+function mostrarSinResultados(contenedor, mostrar) {
+    const aviso = contenedor.querySelector('#sinResultados');
+    if (aviso) aviso.style.display = mostrar ? 'block' : 'none';
+}
+
+/** Devuelve el catálogo a "Todos" y sin término de búsqueda. */
+function limpiarFiltros(contenedor) {
+    const input = document.getElementById('buscador');
+    if (input) input.value = '';
+    terminoBusqueda = '';
+    sincronizarUrl('');
+
+    categoriaActiva = 'todos';
+    document.querySelectorAll('.filter-btn').forEach(function (boton) {
+        boton.classList.toggle('active', boton.getAttribute('data-filter') === 'todos');
+    });
+
+    aplicarFiltros(contenedor);
 }
 
 function iniciarFiltros(contenedor) {
@@ -316,6 +370,10 @@ export async function iniciarCatalogo() {
     const productos = await obtenerProductos();
     indexarParaBusqueda(productos);
     contenedor.innerHTML = productos.map(plantillaTarjeta).join('');
+
+    /* El aviso se agrega después de pintar las tarjetas, porque escribir
+       innerHTML se lo llevaría por delante. */
+    crearAvisoSinResultados(contenedor);
 
     observarTarjetas(contenedor);
     aplicarFiltros(contenedor);
