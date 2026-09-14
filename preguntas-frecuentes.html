@@ -555,58 +555,8 @@
         </div>
     </aside>
 
-    <script>
-        (function () {
-            var pageKey = 'rating_' + (window.location.pathname.split('/').pop().replace('.html', '') || 'index');
-            var stars = document.querySelectorAll('.star');
-            var infoEl = document.getElementById('ratingInfo');
-            var thanksEl = document.getElementById('ratingThanks');
-            function getData() {
-                try { return JSON.parse(localStorage.getItem(pageKey)) || { total: 0, count: 0 }; }
-                catch (e) { return { total: 0, count: 0 }; }
-            }
-            function showInfo() {
-                var d = getData();
-                infoEl.textContent = d.count === 0
-                    ? 'Sé el primero en valorar esta página'
-                    : 'Promedio: ' + (d.total / d.count).toFixed(1) + ' / 5 (' + d.count + (d.count === 1 ? ' valoración' : ' valoraciones') + ')';
-            }
-            function highlightStars(val) {
-                stars.forEach(function (s) {
-                    var on = parseInt(s.dataset.val) <= val;
-                    s.classList.toggle('active', on);
-                    s.style.color = on ? '#C9A84C' : '#ccc';
-                });
-            }
-            showInfo();
-            var rated = sessionStorage.getItem(pageKey + '_rated');
-            if (rated) {
-                highlightStars(parseInt(rated));
-                thanksEl.style.display = 'block';
-                stars.forEach(function (s) { s.style.cursor = 'default'; s.style.pointerEvents = 'none'; });
-            }
-            stars.forEach(function (star) {
-                star.addEventListener('mouseenter', function () {
-                    if (!sessionStorage.getItem(pageKey + '_rated')) highlightStars(parseInt(this.dataset.val));
-                });
-                star.addEventListener('mouseleave', function () {
-                    if (!sessionStorage.getItem(pageKey + '_rated')) highlightStars(0);
-                });
-                star.addEventListener('click', function () {
-                    if (sessionStorage.getItem(pageKey + '_rated')) return;
-                    var val = parseInt(this.dataset.val);
-                    var d = getData();
-                    d.total += val; d.count += 1;
-                    localStorage.setItem(pageKey, JSON.stringify(d));
-                    sessionStorage.setItem(pageKey + '_rated', val);
-                    highlightStars(val);
-                    thanksEl.style.display = 'block';
-                    showInfo();
-                    stars.forEach(function (s) { s.style.cursor = 'default'; s.style.pointerEvents = 'none'; });
-                });
-            });
-        })();
-    </script>
+    <script type="module" src="js/carrito.js"></script>
+    <script type="module" src="js/valoracion.js"></script>
 
 </body>
 </html>
