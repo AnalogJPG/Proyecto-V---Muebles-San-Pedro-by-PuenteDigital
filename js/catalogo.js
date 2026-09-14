@@ -1,115 +1,93 @@
 /**
- * Catálogo: filtros por categoría, modal de detalle, animación en cascada
- * y botones de "Agregar al carrito".
+ * Catálogo: dibuja las tarjetas desde products.json, filtra por categoría,
+ * abre el modal de detalle y agrega productos al carrito.
  *
  * Solo lo usa catalogo.html.
- */
-
-import { agregarAlCarrito } from './carrito.js';
-
-/**
- * Convierte el precio escrito en el atributo data-product-price
- * ("$12,990 MXN") al número que usa el carrito.
  *
- * Es un puente temporal. Cuando los productos salgan de products.json el
- * precio ya llegará como número y esta función desaparece.
+ * Las tarjetas ya no existen en el HTML al cargar la página, así que no se
+ * pueden enganchar listeners de uno en uno como antes. Todo lo que ocurre
+ * dentro de la cuadrícula se resuelve por delegación de eventos sobre el
+ * contenedor, que sí existe desde el principio.
  */
-function precioDesdeTexto(texto) {
-    const numero = parseFloat(String(texto || '').replace(/[^0-9.]/g, ''));
-    return Number.isFinite(numero) ? numero : 0;
+
+import { obtenerProductos, obtenerProductoPorId } from './datos/repositorioProductos.js';
+import { agregarAlCarrito } from './carrito.js';
+import { formatearPrecio } from './ui/formato.js';
+
+/** Escapa el texto que se inserta como atributo o contenido HTML. */
+function escapar(texto) {
+    return String(texto == null ? '' : texto)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
 }
 
 /* ============================================
-   FILTROS POR CATEGORÍA
+   TARJETAS
    ============================================ */
 
-function iniciarFiltros() {
-    const botones  = document.querySelectorAll('.filter-btn');
-    const tarjetas = document.querySelectorAll('.product-card');
+/**
+ * Marcado de una tarjeta. Mantiene las mismas clases y la misma estructura
+ * que tenían las tarjetas escritas a mano, para que el CSS siga aplicando
+ * sin tocar nada.
+ *
+ * Los datos del producto ya no viajan en atributos data-: el modal los pide
+ * al repositorio por id. Solo se conserva el id.
+ */
+function plantillaTarjeta(producto) {
+    const nombre = escapar(producto.nombre);
+    const id     = escapar(producto.id);
+
+    return '<article class="card product-card categoria-' + escapar(producto.categoria) + '" data-category="' + escapar(producto.categoria) + '">' +
+        '<div class="card-image">' +
+            '<img src="' + escapar(producto.imagen) + '" alt="' + nombre + '">' +
+        '</div>' +
+        '<div class="card-body">' +
+            '<h3>' + nombre + '</h3>' +
+            '<p class="price">' + escapar(formatearPrecio(producto.precio)) + '</p>' +
+            '<button class="btn-primary btn-view-details" data-product-id="' + id + '">Ver detalles</button>' +
+            '<button class="btn-add-cart" data-product-id="' + id + '">Agregar al carrito</button>' +
+        '</div>' +
+    '</article>';
+}
+
+/* ============================================
+   FILTRO POR CATEGORÍA
+   ============================================ */
+
+let categoriaActiva = 'todos';
+
+function aplicarFiltros(contenedor) {
+    contenedor.querySelectorAll('.product-card').forEach(function (tarjeta) {
+        const coincide = categoriaActiva === 'todos' || tarjeta.dataset.category === categoriaActiva;
+        tarjeta.style.display = coincide ? 'block' : 'none';
+    });
+}
+
+function iniciarFiltros(contenedor) {
+    const botones = document.querySelectorAll('.filter-btn');
 
     botones.forEach(function (boton) {
         boton.addEventListener('click', function () {
             botones.forEach(function (otro) { otro.classList.remove('active'); });
             this.classList.add('active');
-
-            const filtro = this.getAttribute('data-filter');
-
-            tarjetas.forEach(function (tarjeta) {
-                if (filtro === 'todos') {
-                    tarjeta.style.display = 'block';
-                } else {
-                    tarjeta.style.display = tarjeta.getAttribute('data-category') === filtro ? 'block' : 'none';
-                }
-            });
+            categoriaActiva = this.getAttribute('data-filter');
+            aplicarFiltros(contenedor);
         });
     });
 }
 
 /* ============================================
-   MODAL DE DETALLE
+   ANIMACIÓN EN CASCADA
    ============================================ */
 
-function iniciarModal() {
-    const modal = document.getElementById('productModal');
-    if (!modal) return;
-
-    function cerrar() {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-
-    document.querySelectorAll('.btn-view-details').forEach(function (boton) {
-        boton.addEventListener('click', function () {
-            const nombre      = this.getAttribute('data-product-name');
-            const precioTexto = this.getAttribute('data-product-price');
-            const imagen      = this.getAttribute('data-product-image');
-            const id          = this.getAttribute('data-product-id');
-
-            document.getElementById('modalProductName').textContent  = nombre;
-            document.getElementById('modalProductPrice').textContent = precioTexto;
-            document.getElementById('modalProductImage').src         = imagen;
-            document.getElementById('modalProductImage').alt         = nombre;
-            document.getElementById('modalDescription').textContent  = this.getAttribute('data-description');
-            document.getElementById('modalDimensions').textContent   = this.getAttribute('data-dimensions');
-            document.getElementById('modalMaterials').textContent    = this.getAttribute('data-materials');
-            document.getElementById('modalGuarantee').textContent    = this.getAttribute('data-guarantee');
-
-            const botonCotizar = document.getElementById('modalQuoteBtn');
-            botonCotizar.href = id ? 'cotizacion.html?producto=' + id : 'cotizacion.html';
-
-            /* El id real viaja en el modal para que "Agregar al carrito"
-               use el mismo identificador que la tarjeta. */
-            modal.dataset.productId    = id || '';
-            modal.dataset.productImage = imagen || '';
-            modal.dataset.productName  = nombre || '';
-            modal.dataset.productPrice = String(precioDesdeTexto(precioTexto));
-
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        });
-    });
-
-    const cruz = document.querySelector('.modal-close');
-    if (cruz) cruz.addEventListener('click', cerrar);
-
-    const botonCerrar = document.querySelector('.modal-close-btn');
-    if (botonCerrar) botonCerrar.addEventListener('click', cerrar);
-
-    window.addEventListener('click', function (evento) {
-        if (evento.target === modal) cerrar();
-    });
-
-    document.addEventListener('keydown', function (evento) {
-        if (evento.key === 'Escape' && modal.style.display === 'block') cerrar();
-    });
-}
-
-/* ============================================
-   ANIMACIÓN EN CASCADA AL HACER SCROLL
-   ============================================ */
-
-function iniciarAnimaciones() {
-    const tarjetas = document.querySelectorAll('.product-card');
+/**
+ * Observa las tarjetas justo después de generarlas, conservando el retraso
+ * en cascada de índice * 0.08s.
+ */
+function observarTarjetas(contenedor) {
+    const tarjetas = contenedor.querySelectorAll('.product-card');
 
     if (!('IntersectionObserver' in window)) {
         tarjetas.forEach(function (tarjeta) { tarjeta.style.opacity = 1; });
@@ -134,7 +112,59 @@ function iniciarAnimaciones() {
 }
 
 /* ============================================
-   BOTONES DE "AGREGAR AL CARRITO"
+   MODAL DE DETALLE
+   ============================================ */
+
+function cerrarModal() {
+    const modal = document.getElementById('productModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function abrirModal(producto) {
+    const modal = document.getElementById('productModal');
+    if (!modal || !producto) return;
+
+    document.getElementById('modalProductName').textContent  = producto.nombre;
+    document.getElementById('modalProductPrice').textContent = formatearPrecio(producto.precio);
+    document.getElementById('modalProductImage').src         = producto.imagen;
+    document.getElementById('modalProductImage').alt         = producto.nombre;
+    document.getElementById('modalDescription').textContent  = producto.descripcion;
+    document.getElementById('modalDimensions').textContent   = producto.dimensiones;
+    document.getElementById('modalMaterials').textContent    = producto.materiales;
+    document.getElementById('modalGuarantee').textContent    = producto.garantia;
+
+    document.getElementById('modalQuoteBtn').href = 'cotizacion.html?producto=' + producto.id;
+
+    /* El id viaja en el modal para que su botón de carrito use el mismo
+       identificador que la tarjeta. */
+    modal.dataset.productId = producto.id;
+
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function iniciarModal() {
+    const modal = document.getElementById('productModal');
+    if (!modal) return;
+
+    const cruz = document.querySelector('.modal-close');
+    if (cruz) cruz.addEventListener('click', cerrarModal);
+
+    const botonCerrar = document.querySelector('.modal-close-btn');
+    if (botonCerrar) botonCerrar.addEventListener('click', cerrarModal);
+
+    window.addEventListener('click', function (evento) {
+        if (evento.target === modal) cerrarModal();
+    });
+
+    document.addEventListener('keydown', function (evento) {
+        if (evento.key === 'Escape' && modal.style.display === 'block') cerrarModal();
+    });
+}
+
+/* ============================================
+   AGREGAR AL CARRITO
    ============================================ */
 
 /** Retroalimentación visual compartida por los dos botones. */
@@ -148,59 +178,76 @@ function confirmarAgregado(boton, conClase) {
     }, 1500);
 }
 
-function iniciarBotonesDeCarrito() {
-    /* Un botón por tarjeta, insertado después de "Ver detalles". */
-    document.querySelectorAll('.btn-view-details').forEach(function (botonDetalles) {
-        const boton = document.createElement('button');
-        boton.className = 'btn-add-cart';
-        boton.textContent = 'Agregar al carrito';
-
-        boton.addEventListener('click', function () {
-            agregarAlCarrito({
-                id: botonDetalles.dataset.productId,
-                nombre: botonDetalles.dataset.productName,
-                precio: precioDesdeTexto(botonDetalles.dataset.productPrice),
-                imagen: botonDetalles.dataset.productImage
-            });
-            confirmarAgregado(boton, true);
-        });
-
-        botonDetalles.parentNode.insertBefore(boton, botonDetalles.nextSibling);
+async function agregarPorId(id) {
+    const producto = await obtenerProductoPorId(id);
+    if (!producto) return false;
+    agregarAlCarrito({
+        id: producto.id,
+        nombre: producto.nombre,
+        precio: producto.precio,
+        imagen: producto.imagen
     });
+    return true;
+}
 
-    /* Botón dentro del modal. */
+function iniciarBotonDelModal() {
     const acciones = document.querySelector('.modal-actions');
     const modal = document.getElementById('productModal');
     if (!acciones || !modal) return;
 
-    const botonModal = document.createElement('button');
-    botonModal.className = 'btn btn-secondary';
-    botonModal.style.cssText = 'flex:1; background:#C9A84C; border:none; color:white; cursor:pointer; font-family:inherit;';
-    botonModal.textContent = 'Agregar al carrito';
+    const boton = document.createElement('button');
+    boton.className = 'btn btn-secondary';
+    boton.style.cssText = 'flex:1; background:#C9A84C; border:none; color:white; cursor:pointer; font-family:inherit;';
+    boton.textContent = 'Agregar al carrito';
 
-    botonModal.addEventListener('click', function () {
-        if (!modal.dataset.productId) return;
-        agregarAlCarrito({
-            id: modal.dataset.productId,
-            nombre: modal.dataset.productName,
-            precio: Number(modal.dataset.productPrice),
-            imagen: modal.dataset.productImage
-        });
-        confirmarAgregado(botonModal, false);
+    boton.addEventListener('click', async function () {
+        if (await agregarPorId(modal.dataset.productId)) {
+            confirmarAgregado(boton, false);
+        }
     });
 
-    acciones.insertBefore(botonModal, acciones.firstChild);
+    acciones.insertBefore(boton, acciones.firstChild);
+}
+
+/* ============================================
+   DELEGACIÓN SOBRE LA CUADRÍCULA
+   ============================================ */
+
+function iniciarDelegacion(contenedor) {
+    contenedor.addEventListener('click', async function (evento) {
+        const detalles = evento.target.closest('.btn-view-details');
+        if (detalles) {
+            abrirModal(await obtenerProductoPorId(detalles.dataset.productId));
+            return;
+        }
+
+        const agregar = evento.target.closest('.btn-add-cart');
+        if (agregar) {
+            if (await agregarPorId(agregar.dataset.productId)) {
+                confirmarAgregado(agregar, true);
+            }
+        }
+    });
 }
 
 /* ============================================
    ARRANQUE
    ============================================ */
 
-export function iniciarCatalogo() {
-    iniciarFiltros();
+export async function iniciarCatalogo() {
+    const contenedor = document.getElementById('productGrid');
+    if (!contenedor) return;
+
     iniciarModal();
-    iniciarAnimaciones();
-    iniciarBotonesDeCarrito();
+    iniciarBotonDelModal();
+    iniciarDelegacion(contenedor);
+    iniciarFiltros(contenedor);
+
+    const productos = await obtenerProductos();
+    contenedor.innerHTML = productos.map(plantillaTarjeta).join('');
+
+    observarTarjetas(contenedor);
+    aplicarFiltros(contenedor);
 }
 
 iniciarCatalogo();
