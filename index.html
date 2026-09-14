@@ -3,25 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gutiérrez Mueblería - Inicio</title>
+    <title>Muebles San Pedro - Inicio</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/jpeg" href="images/Logo.jpeg">
+    <link rel="shortcut icon" href="images/Logo.jpeg">
     <style>
         /* ESTILOS ESPECÍFICOS PÁGINA PRINCIPAL */
         
-        /* HERO SECTION */
-        .hero-section {
-            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
-            padding: 60px 0;
-            text-align: center;
+        /* HERO SLIDER */
+        .hero-slider {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
         }
 
-        .hero-title {
+        .slider-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .slide-title {
             font-size: 48px;
             font-weight: 700;
             color: #FFFFFF;
-            margin: 0;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 12px;
+        }
+
+        .slide-subtitle {
+            font-size: 20px;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 28px;
+        }
+
+        .slide-btn {
+            display: inline-block;
+            background-color: #C9A84C;
+            color: #fff;
+            padding: 14px 36px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .slide-btn:hover {
+            background-color: #A88730;
+        }
+
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.25);
+            border: none;
+            color: #fff;
+            font-size: 36px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .slider-arrow:hover {
+            background: rgba(255,255,255,0.5);
+        }
+
+        .slider-arrow.prev { left: 16px; }
+        .slider-arrow.next { right: 16px; }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .slider-dot.active {
+            background: #fff;
         }
 
         /* CATEGORÍAS SECTION */
@@ -61,11 +168,11 @@
         .category-image-placeholder {
             width: 100%;
             height: 280px;
-            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            background: linear-gradient(135deg, #EEF2F7 0%, #D5DEE8 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #1976D2;
+            color: #3D5A80;
             font-size: 16px;
             font-weight: 500;
         }
@@ -80,9 +187,87 @@
             background-color: #FFFFFF;
         }
 
+        /* PROMOCIÓN PRIMAVERA - VIDEOS */
+        .promo-section {
+            background-color: #F5F2EE;
+            padding: 80px 0;
+        }
+
+        .promo-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .promo-badge {
+            display: inline-block;
+            background-color: #C9A84C;
+            color: white;
+            padding: 6px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .promo-title {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .promo-subtitle {
+            font-size: 18px;
+            color: #666;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .video-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: box-shadow 0.3s;
+        }
+
+        .video-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+        }
+
+        .video-card video {
+            width: 100%;
+            display: block;
+            max-height: 260px;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .video-card-body {
+            padding: 16px 20px 20px;
+        }
+
+        .video-card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .video-card-desc {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.5;
+        }
+
         /* TRADICIÓN FAMILIAR SECTION */
         .tradition-section {
-            background-color: #FFF8E1;
+            background-color: #F5F2EE;
             padding: 100px 0;
         }
 
@@ -100,7 +285,7 @@
         .tradition-title {
             font-size: 36px;
             font-weight: 700;
-            color: #1976D2;
+            color: #3D5A80;
             margin-bottom: 25px;
         }
 
@@ -113,7 +298,7 @@
 
         .tradition-btn {
             display: inline-block;
-            background-color: #1976D2;
+            background-color: #3D5A80;
             color: #FFFFFF;
             padding: 12px 35px;
             border-radius: 5px;
@@ -123,7 +308,7 @@
         }
 
         .tradition-btn:hover {
-            background-color: #1565C0;
+            background-color: #2C4466;
         }
 
         .tradition-image {
@@ -148,7 +333,7 @@
 
         /* CTA FINAL SECTION */
         .final-cta-section {
-            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            background: linear-gradient(135deg, #3D5A80 0%, #2C4466 100%);
             padding: 100px 0;
             text-align: center;
         }
@@ -162,13 +347,13 @@
 
         .final-cta-subtitle {
             font-size: 20px;
-            color: #E3F2FD;
+            color: rgba(255,255,255,0.85);
             margin-bottom: 40px;
         }
 
         .final-cta-button {
             display: inline-block;
-            background-color: #FF9800;
+            background-color: #C9A84C;
             color: #FFFFFF;
             padding: 18px 50px;
             font-size: 18px;
@@ -176,13 +361,13 @@
             text-decoration: none;
             border-radius: 5px;
             transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(255,152,0,0.3);
+            box-shadow: 0 4px 12px rgba(201,168,76,0.3);
         }
 
         .final-cta-button:hover {
-            background-color: #F57C00;
+            background-color: #A88730;
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255,152,0,0.4);
+            box-shadow: 0 6px 16px rgba(201,168,76,0.4);
         }
 
         /* RESPONSIVE */
@@ -198,15 +383,33 @@
         }
 
         @media (max-width: 768px) {
-            .hero-section {
-                padding: 80px 0;
+            .hero-slider {
+                height: 320px;
             }
 
-            .hero-title {
-                font-size: 32px;
-                padding: 0 20px;
+            .slide-title {
+                font-size: 26px;
             }
-            
+
+            .slide-subtitle {
+                font-size: 15px;
+                margin-bottom: 16px;
+            }
+
+            .slider-arrow {
+                width: 38px;
+                height: 38px;
+                font-size: 26px;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .promo-title {
+                font-size: 26px;
+            }
+
             .categories-section {
                 padding: 60px 0;
             }
@@ -267,7 +470,9 @@
     <header class="header-top">
         <div class="container">
             <div class="header-content">
-                <a href="index.html" class="logo">Gutiérrez Mueblería</a>
+                <a href="index.html" class="logo">
+                    <img src="images/Logo.jpeg" alt="Muebles San Pedro" style="height:65px; width:auto; display:block;">
+                </a>
                 
                 <div class="search-bar">
                     <input type="text" placeholder="¿Qué mueble estás buscando?">
@@ -291,22 +496,56 @@
                 <li><a href="index.html" class="active">INICIO</a></li>
                 <li><a href="catalogo.html">CATÁLOGO</a></li>
                 <li><a href="quienes-somos.html">QUIÉNES SOMOS</a></li>
-                <li><a href="preguntas-frecuentes.html">FAQ</a></li>
+                <li><a href="preguntas-frecuentes.html">PREGUNTAS FRECUENTES</a></li>
                 <li><a href="contacto.html">CONTACTO</a></li>
                 <li><a href="cotizacion.html" class="cta-btn">SOLICITAR COTIZACIÓN</a></li>
             </ul>
         </div>
     </nav>
 
+    <!-- HERO SLIDER -->
+    <section class="hero-slider" id="heroSlider">
+        <div class="slider-track" id="sliderTrack">
+            <div class="slide">
+                <img src="images/livingroom.jpg" alt="Salas">
+                <div class="slide-overlay">
+                    <h1 class="slide-title">Salas con Estilo</h1>
+                    <p class="slide-subtitle">Confort y elegancia para tu sala de estar</p>
+                    <a href="catalogo.html" class="slide-btn">Ver Catálogo</a>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="images/dinning.jpg" alt="Comedores">
+                <div class="slide-overlay">
+                    <h1 class="slide-title">Comedores para Reunirse</h1>
+                    <p class="slide-subtitle">Diseños perfectos para compartir en familia</p>
+                    <a href="catalogo.html" class="slide-btn">Ver Catálogo</a>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="images/Bedroom.jpg" alt="Recámaras">
+                <div class="slide-overlay">
+                    <h1 class="slide-title">Recámaras con Descanso</h1>
+                    <p class="slide-subtitle">Tu espacio de descanso ideal</p>
+                    <a href="catalogo.html" class="slide-btn">Ver Catálogo</a>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="images/fachada.png" alt="Muebles San Pedro">
+                <div class="slide-overlay">
+                    <h1 class="slide-title">Tradición Familiar</h1>
+                    <p class="slide-subtitle">Más de 15 años de calidad en Tlajomulco</p>
+                    <a href="quienes-somos.html" class="slide-btn">Conoce nuestra historia</a>
+                </div>
+            </div>
+        </div>
+        <button class="slider-arrow prev" id="sliderPrev">&#8249;</button>
+        <button class="slider-arrow next" id="sliderNext">&#8250;</button>
+        <div class="slider-dots" id="sliderDots"></div>
+    </section>
+
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
-        
-        <!-- SECCIÓN HERO -->
-        <section class="hero-section">
-            <div class="container">
-                <h1 class="hero-title">Muebles de Calidad para tu Hogar</h1>
-            </div>
-        </section>
 
         <!-- SECCIÓN CATEGORÍAS -->
         <section class="categories-section">
@@ -337,6 +576,59 @@
             </div>
         </section>
 
+        <!-- SECCIÓN VIDEOS PROMOCIÓN PRIMAVERA -->
+        <section class="promo-section">
+            <div class="container">
+                <div class="promo-header">
+                    <span class="promo-badge">🌸 Promoción de Primavera</span>
+                    <h2 class="promo-title">Descuentos Especiales Esta Temporada</h2>
+                    <p class="promo-subtitle">Renueva tu hogar con los mejores precios de la primavera</p>
+                </div>
+                <div class="video-grid">
+                    <div class="video-card">
+                        <video controls preload="none" poster="images/dinning.jpg">
+                            <source src="videos/video_comedor.mp4" type="video/mp4">
+                            Tu navegador no soporta reproducción de video.
+                        </video>
+                        <div class="video-card-body">
+                            <h3 class="video-card-title">Comedores en Primavera</h3>
+                            <p class="video-card-desc">Descuentos exclusivos para reunir a toda la familia alrededor de la mesa</p>
+                        </div>
+                    </div>
+                    <div class="video-card">
+                        <video controls preload="none" poster="images/Bedroom.jpg">
+                            <source src="videos/video_recamara.mp4" type="video/mp4">
+                            Tu navegador no soporta reproducción de video.
+                        </video>
+                        <div class="video-card-body">
+                            <h3 class="video-card-title">Recámaras en Primavera</h3>
+                            <p class="video-card-desc">Renueva tu espacio de descanso con nuestras ofertas de temporada</p>
+                        </div>
+                    </div>
+                    <div class="video-card">
+                        <video controls preload="none" poster="images/Kitchen.jpg">
+                            <source src="videos/video_cocina.mp4" type="video/mp4">
+                            Tu navegador no soporta reproducción de video.
+                        </video>
+                        <div class="video-card-body">
+                            <h3 class="video-card-title">Cocinas en Primavera</h3>
+                            <p class="video-card-desc">Moderniza tu cocina con muebles de calidad a precios especiales</p>
+                        </div>
+                    </div>
+                    <div class="video-card">
+                        <video controls preload="none" poster="images/fachada.png">
+                            <source src="videos/video_fachada.mp4" type="video/mp4">
+                            Tu navegador no soporta reproducción de video.
+                        </video>
+                        <div class="video-card-body">
+                            <h3 class="video-card-title">Visítanos Esta Primavera</h3>
+                            <p class="video-card-desc">Ven a nuestra tienda y aprovecha los descuentos de esta temporada</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- SECCIÓN TRADICIÓN FAMILIAR -->
         <section class="tradition-section">
             <div class="container">
@@ -351,7 +643,7 @@
                         <a href="quienes-somos.html" class="tradition-btn">Conoce nuestra historia</a>
                     </div>
                     <div class="tradition-image">
-                        <img src="images/Logo.png" alt="Gutiérrez Mueblería" style="width: 100%; height: 400px; object-fit: contain; background-color: #FFFFFF; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                        <img src="images/Logo.jpeg" alt="Muebles San Pedro" style="width: 100%; height: 400px; object-fit: contain; background-color: #FFFFFF; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                     </div>
                 </div>
             </div>
@@ -368,6 +660,24 @@
 
     </main>
 
+    <!-- VALORACIÓN DE PÁGINA -->
+    <section class="rating-section" style="background-color:#F5F5F5; padding:50px 0;">
+        <div class="container">
+            <div class="rating-widget" style="text-align:center;">
+                <h3 class="rating-title" style="font-family:'Montserrat',Arial,sans-serif; font-size:22px; color:#333; margin-bottom:16px;">¿Qué te pareció esta página?</h3>
+                <div class="rating-stars" style="display:flex; justify-content:center; gap:6px; margin-bottom:14px;">
+                    <span class="star" data-val="1" style="font-size:44px; cursor:pointer; user-select:none; color:#ccc; line-height:1;">★</span>
+                    <span class="star" data-val="2" style="font-size:44px; cursor:pointer; user-select:none; color:#ccc; line-height:1;">★</span>
+                    <span class="star" data-val="3" style="font-size:44px; cursor:pointer; user-select:none; color:#ccc; line-height:1;">★</span>
+                    <span class="star" data-val="4" style="font-size:44px; cursor:pointer; user-select:none; color:#ccc; line-height:1;">★</span>
+                    <span class="star" data-val="5" style="font-size:44px; cursor:pointer; user-select:none; color:#ccc; line-height:1;">★</span>
+                </div>
+                <p class="rating-info" id="ratingInfo" style="font-size:15px; color:#888; margin-bottom:8px;"></p>
+                <p class="rating-thanks" id="ratingThanks" style="display:none; font-size:16px; color:#3D5A80; font-weight:500;">¡Gracias por tu valoración!</p>
+            </div>
+        </div>
+    </section>
+
     <!-- FOOTER -->
     <footer class="footer">
         <div class="container">
@@ -376,7 +686,7 @@
                     <h3>Información de Contacto</h3>
                     <p>Calle Juárez Eje Sur 23<br>Tlajomulco De Zúñiga</p>
                     <p>Teléfono: 33-3333-3333</p>
-                    <p>Email: contacto@gutierrezmuebleria.com</p>
+                    <p>Email: contacto@mueblessanpedro.com</p>
                 </div>
                 <div class="footer-column">
                     <h3>Enlaces Rápidos</h3>
@@ -398,16 +708,22 @@
                     <h3>Redes Sociales</h3>
                     <p>Síguenos en redes sociales</p>
                     <div class="social-icons">
-                        <div class="social-icon">f</div>
-                        <div class="social-icon">i</div>
-                        <div class="social-icon">W</div>
+                        <a href="https://www.facebook.com/mueblessanpedro" target="_blank" rel="noopener" class="social-icon social-facebook" title="Facebook" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                        </a>
+                        <a href="https://www.instagram.com/mueblessanpedro" target="_blank" rel="noopener" class="social-icon social-instagram" title="Instagram" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                        </a>
+                        <a href="https://wa.me/523333333333" target="_blank" rel="noopener" class="social-icon social-whatsapp" title="WhatsApp" aria-label="WhatsApp">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="subfooter">
             <div class="container">
-                <p>© 2025 Gutiérrez Mueblería. Todos los derechos reservados. 
+                <p>© 2025 Muebles San Pedro. Todos los derechos reservados. 
                     <a href="#">Aviso de Privacidad</a> | 
                     <a href="#">Términos y Condiciones</a>
                 </p>
@@ -416,7 +732,109 @@
     </footer>
 
     <!-- BOTÓN FLOTANTE WHATSAPP -->
-    <a href="https://wa.me/52XXXXXXXXXX" class="whatsapp-float" title="¡Chatea con nosotros!">💬</a>
+    <a href="https://wa.me/523333333333" class="whatsapp-float" title="¡Chatea con nosotros!">💬</a>
+
+    <script>
+        /* ── SLIDER ── */
+        (function () {
+            var track = document.getElementById('sliderTrack');
+            var slider = document.getElementById('heroSlider');
+            var dotsContainer = document.getElementById('sliderDots');
+            var slides = track.querySelectorAll('.slide');
+            var total = slides.length;
+            var current = 0;
+            var timer;
+
+            slides.forEach(function (_, i) {
+                var dot = document.createElement('button');
+                dot.className = 'slider-dot' + (i === 0 ? ' active' : '');
+                dot.setAttribute('aria-label', 'Ir a imagen ' + (i + 1));
+                dot.addEventListener('click', function () { goTo(i); resetTimer(); });
+                dotsContainer.appendChild(dot);
+            });
+
+            function updateDots() {
+                dotsContainer.querySelectorAll('.slider-dot').forEach(function (d, i) {
+                    d.classList.toggle('active', i === current);
+                });
+            }
+
+            function goTo(index) {
+                current = (index + total) % total;
+                track.style.transform = 'translateX(-' + (current * 100) + '%)';
+                updateDots();
+            }
+
+            function resetTimer() {
+                clearInterval(timer);
+                timer = setInterval(function () { goTo(current + 1); }, 5000);
+            }
+
+            document.getElementById('sliderPrev').addEventListener('click', function () { goTo(current - 1); resetTimer(); });
+            document.getElementById('sliderNext').addEventListener('click', function () { goTo(current + 1); resetTimer(); });
+            slider.addEventListener('mouseenter', function () { clearInterval(timer); });
+            slider.addEventListener('mouseleave', resetTimer);
+
+            resetTimer();
+        })();
+
+        /* ── VALORACIÓN ── */
+        (function () {
+            var pageKey = 'rating_' + (window.location.pathname.split('/').pop().replace('.html', '') || 'index');
+            var stars = document.querySelectorAll('.star');
+            var infoEl = document.getElementById('ratingInfo');
+            var thanksEl = document.getElementById('ratingThanks');
+
+            function getData() {
+                try { return JSON.parse(localStorage.getItem(pageKey)) || { total: 0, count: 0 }; }
+                catch (e) { return { total: 0, count: 0 }; }
+            }
+
+            function showInfo() {
+                var d = getData();
+                infoEl.textContent = d.count === 0
+                    ? 'Sé el primero en valorar esta página'
+                    : 'Promedio: ' + (d.total / d.count).toFixed(1) + ' / 5 (' + d.count + (d.count === 1 ? ' valoración' : ' valoraciones') + ')';
+            }
+
+            function highlightStars(val) {
+                stars.forEach(function (s) {
+                    var on = parseInt(s.dataset.val) <= val;
+                    s.classList.toggle('active', on);
+                    s.style.color = on ? '#C9A84C' : '#ccc';
+                });
+            }
+
+            showInfo();
+            var rated = sessionStorage.getItem(pageKey + '_rated');
+            if (rated) {
+                highlightStars(parseInt(rated));
+                thanksEl.style.display = 'block';
+                stars.forEach(function (s) { s.style.cursor = 'default'; s.style.pointerEvents = 'none'; });
+            }
+
+            stars.forEach(function (star) {
+                star.addEventListener('mouseenter', function () {
+                    if (!sessionStorage.getItem(pageKey + '_rated')) highlightStars(parseInt(this.dataset.val));
+                });
+                star.addEventListener('mouseleave', function () {
+                    if (!sessionStorage.getItem(pageKey + '_rated')) highlightStars(0);
+                });
+                star.addEventListener('click', function () {
+                    if (sessionStorage.getItem(pageKey + '_rated')) return;
+                    var val = parseInt(this.dataset.val);
+                    var d = getData();
+                    d.total += val; d.count += 1;
+                    localStorage.setItem(pageKey, JSON.stringify(d));
+                    sessionStorage.setItem(pageKey + '_rated', val);
+                    highlightStars(val);
+                    thanksEl.style.display = 'block';
+                    showInfo();
+                    stars.forEach(function (s) { s.style.cursor = 'default'; s.style.pointerEvents = 'none'; });
+                });
+            });
+        })();
+    </script>
 
 </body>
 </html>

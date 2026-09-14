@@ -34,15 +34,15 @@ a {
 
 /* VARIABLES DE COLOR */
 :root {
-    --color-primario: #1976D2;
-    --color-secundario: #FF9800;
-    --color-acento: #4CAF50;
+    --color-primario: #3D5A80;
+    --color-secundario: #C9A84C;
+    --color-acento: #C9A84C;
     --color-whatsapp: #25D366;
     --color-texto: #333333;
     --color-texto-claro: #666666;
     --color-fondo: #FFFFFF;
-    --color-fondo-claro: #F5F5F5;
-    --color-fondo-crema: #FFF8E1;
+    --color-fondo-claro: #F5F2EE;
+    --color-fondo-crema: #F5F2EE;
     --color-error: #D32F2F;
 }
 
@@ -69,17 +69,9 @@ a {
 }
 
 .logo {
-    width: 180px;
-    height: 60px;
-    background-color: var(--color-primario);
     display: flex;
     align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 18px;
-    font-weight: 700;
     cursor: pointer;
-    border-radius: 5px;
 }
 
 .search-bar {
@@ -179,7 +171,7 @@ a {
 }
 
 .nav-menu .cta-btn:hover {
-    background-color: #45a049;
+    background-color: #A88730;
 }
 
 /* ============================================
@@ -273,6 +265,14 @@ a {
     background-color: var(--color-primario);
 }
 
+.social-facebook { background-color: #1877F2; }
+.social-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+.social-whatsapp { background-color: #25D366; }
+
+.social-facebook:hover { background-color: #0b5fcc; }
+.social-instagram:hover { opacity: 0.85; }
+.social-whatsapp:hover { background-color: #1da851; }
+
 .subfooter {
     background-color: #212121;
     padding: 20px 0;
@@ -333,7 +333,7 @@ a {
 }
 
 .btn-primary:hover {
-    background-color: #1565C0;
+    background-color: #2C4466;
 }
 
 .btn-secondary {
@@ -342,7 +342,7 @@ a {
 }
 
 .btn-secondary:hover {
-    background-color: #e68900;
+    background-color: #A88730;
 }
 
 .btn-success {
@@ -351,7 +351,7 @@ a {
 }
 
 .btn-success:hover {
-    background-color: #45a049;
+    background-color: #A88730;
 }
 
 /* Tarjetas */
@@ -464,6 +464,63 @@ a {
 }
 
 /* ============================================
+   VALORACIÓN DE PÁGINA
+   ============================================ */
+.rating-section {
+    background-color: #F5F5F5;
+    padding: 50px 0;
+}
+
+.rating-widget {
+    text-align: center;
+}
+
+.rating-title {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 16px;
+    font-family: 'Montserrat', Arial, sans-serif;
+}
+
+.rating-stars {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.star {
+    font-size: 44px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s, transform 0.15s;
+    user-select: none;
+    line-height: 1;
+}
+
+.star:hover,
+.star.active {
+    color: #FF9800;
+}
+
+.star:hover {
+    transform: scale(1.2);
+}
+
+.rating-info {
+    font-size: 15px;
+    color: #888;
+    min-height: 22px;
+    margin-bottom: 8px;
+}
+
+.rating-thanks {
+    font-size: 16px;
+    color: #3D5A80;
+    font-weight: 500;
+}
+
+/* ============================================
    FILTROS DE CATÁLOGO
    ============================================ */
 .catalog-filters {
@@ -507,7 +564,7 @@ a {
 .filter-btn:hover {
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+    box-shadow: 0 4px 12px rgba(61, 90, 128, 0.3);
 }
 
 .filter-btn:hover::before {
@@ -518,7 +575,7 @@ a {
 .filter-btn.active {
     background-color: var(--color-primario);
     color: white;
-    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+    box-shadow: 0 4px 12px rgba(61, 90, 128, 0.4);
     transform: translateY(-2px);
 }
 
@@ -530,7 +587,7 @@ a {
 
 .filter-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 6px rgba(25, 118, 210, 0.3);
+    box-shadow: 0 2px 6px rgba(61, 90, 128, 0.3);
 }
 
 /* ============================================
@@ -728,7 +785,7 @@ a {
 
 .modal-details details:hover {
     border-color: var(--color-primario);
-    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
+    box-shadow: 0 2px 8px rgba(61, 90, 128, 0.1);
 }
 
 .modal-details details summary {
@@ -846,7 +903,7 @@ a {
 }
 
 .modal-actions .btn-success:hover {
-    background-color: #45a049;
+    background-color: #A88730;
 }
 
 .modal-actions .btn-secondary {
@@ -855,7 +912,7 @@ a {
 }
 
 .modal-actions .btn-secondary:hover {
-    background-color: #e68900;
+    background-color: #A88730;
 }
 
 /* Responsive para filtros */

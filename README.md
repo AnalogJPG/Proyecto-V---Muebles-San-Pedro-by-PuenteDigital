@@ -1,16 +1,16 @@
-# Gutiérrez Mueblería - Sistema Web
+# Muebles San Pedro - Sistema Web
 
 ## Información del Proyecto
 
-**Cliente:** Gutiérrez Mueblería  
-**Ubicación:** Calle Juárez Eje Sur 23, Tlajomulco De Zúñiga  
-**Equipo:** InnovaSoft  
+**Cliente:** Muebles San Pedro
+**Ubicación:** Calle Juárez Eje Sur 23, Tlajomulco De Zúñiga
+**Equipo:** PuenteDigital
 **Curso:** Desarrollo Web - UDG Virtual
 
 ## Estructura del Proyecto
 
 ```
-gutierrez-muebleria/
+muebles-san-pedro/
 ├── index.html                    (Página principal - Analog)
 ├── catalogo.html                 (Tienda virtual con 20+ productos)
 ├── producto-detalle.html         (Detalle de producto con valoración)
