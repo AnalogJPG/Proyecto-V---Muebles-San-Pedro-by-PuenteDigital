@@ -1,2 +1,15 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Archivos de texto del proyecto: LF en el repositorio
+*.html text
+*.css  text
+*.js   text
+*.json text
+*.md   text
+
+# Binarios: nunca convertir finales de linea
+*.jpg  binary
+*.jpeg binary
+*.png  binary
+*.mp4  binary
