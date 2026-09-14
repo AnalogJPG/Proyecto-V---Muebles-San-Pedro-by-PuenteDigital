@@ -581,6 +581,11 @@
                     quoteBtn.href = 'cotizacion.html';
                 }
 
+                // Guardar el id real en el modal para que "Agregar al carrito"
+                // use el mismo identificador que la tarjeta
+                modal.dataset.productId = productId || '';
+                modal.dataset.productImage = productImage || '';
+
                 modal.style.display = 'block';
                 document.body.style.overflow = 'hidden';
             });
@@ -799,10 +804,12 @@
                 modalAddBtn.style.cssText = 'flex:1; background:#C9A84C; border:none; color:white; cursor:pointer; font-family:inherit;';
                 modalAddBtn.textContent = 'Agregar al carrito';
                 modalAddBtn.addEventListener('click', function () {
+                    var modalEl = document.getElementById('productModal');
                     var name  = document.getElementById('modalProductName').textContent;
                     var price = document.getElementById('modalProductPrice').textContent;
-                    var img   = document.getElementById('modalProductImage').src;
-                    var id    = img.split('/').pop().replace(/\.[^.]+$/, '');
+                    var img   = modalEl.dataset.productImage;
+                    var id    = modalEl.dataset.productId;
+                    if (!id) return;
                     addItem(id, name, price, img);
                     modalAddBtn.textContent = '✓ Agregado';
                     setTimeout(function () { modalAddBtn.textContent = 'Agregar al carrito'; }, 1500);
