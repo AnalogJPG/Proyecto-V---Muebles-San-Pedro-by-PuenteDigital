@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
     <link rel="shortcut icon" href="images/logo.jpeg">
+    <link rel="stylesheet" href="css/carrito.css">
 </head>
 
 <style>
@@ -169,6 +170,9 @@
                         <span>33-3333-3333</span>
                     </a>
                     <a href="#" class="whatsapp-btn">Contáctanos</a>
+                    <button class="cart-icon-btn" id="cartToggle" title="Ver carrito">
+                        Carrito <span class="cart-badge" id="cartBadge">0</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -503,6 +507,29 @@
 
     <!-- BOTÓN FLOTANTE WHATSAPP -->
     <a href="https://wa.me/523333333333" class="whatsapp-float" title="¡Chatea con nosotros!">💬</a>
+
+    <!-- CARRITO LATERAL -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <aside class="cart-drawer" id="cartDrawer">
+        <div class="cart-hdr">
+            <h2>Mi Carrito</h2>
+            <button class="cart-close-btn" id="cartClose">✕</button>
+        </div>
+        <div class="cart-items-list" id="cartItemsList"></div>
+        <div class="cart-empty-msg" id="cartEmptyMsg">
+            <div class="cart-empty-icon">—</div>
+            <p>Tu carrito está vacío</p>
+            <p style="font-size:13px; margin-top:6px;">Agrega productos del catálogo</p>
+        </div>
+        <div class="cart-ftr" id="cartFooter" style="display:none;">
+            <div class="cart-total-row">
+                <span>Total estimado:</span>
+                <span id="cartTotalAmt">$0 MXN</span>
+            </div>
+            <a href="cotizacion.html" class="cart-checkout-btn">Solicitar Cotización →</a>
+            <button class="cart-clear-btn" id="cartClearBtn">Vaciar carrito</button>
+        </div>
+    </aside>
 
     <script>
         (function () {
