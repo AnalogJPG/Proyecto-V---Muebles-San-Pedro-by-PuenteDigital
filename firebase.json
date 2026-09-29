@@ -1,0 +1,30 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      ".firebaserc",
+      "firestore.rules",
+      "firestore.indexes.json",
+      "**/*.md",
+      "**/.*",
+      "**/.git/**",
+      "**/node_modules/**",
+      "scripts/**",
+      "admin/**",
+      "Muebles San Pedro by PuenteDigital/**",
+      "**/*-admin.json",
+      "**/*service-account*.json"
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(jpg|jpeg|png|webp|mp4)",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+      },
+      {
+        "source": "**/*.@(css|js|json)",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600" }]
+      }
+    ]
+  }
+}

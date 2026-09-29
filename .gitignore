@@ -22,3 +22,11 @@ node_modules/
 
 # Logs
 *.log
+
+# Firebase (caché local de la herramienta y registros)
+.firebase/
+firebase-debug.log
+
+# Claves de cuenta de servicio (nunca al repositorio)
+*-admin.json
+*service-account*.json
