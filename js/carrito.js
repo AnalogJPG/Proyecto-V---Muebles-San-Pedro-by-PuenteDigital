@@ -45,6 +45,15 @@ function guardarCarrito(carrito) {
     localStorage.setItem(CLAVE_CARRITO, JSON.stringify(carrito));
 }
 
+/**
+ * Devuelve el carrito guardado. Cada llamada lee de nuevo localStorage, así
+ * que el llamador recibe un arreglo propio que puede modificar sin efecto.
+ * @returns {Array<{id: string, nombre: string, precio: number, imagen: string, cantidad: number}>}
+ */
+export function obtenerCarrito() {
+    return leerCarrito();
+}
+
 /* ============================================
    OPERACIONES
    ============================================ */
@@ -90,7 +99,7 @@ function eliminarItem(id) {
     refrescar();
 }
 
-function vaciarCarrito() {
+export function vaciarCarrito() {
     guardarCarrito([]);
     refrescar();
 }
@@ -103,6 +112,10 @@ function refrescar() {
     const carrito = leerCarrito();
     actualizarBadge(carrito);
     dibujarPanel(carrito);
+
+    /* Avisa a quien muestre el carrito fuera del panel, como la página de
+       cotización, para que se redibuje cuando cambian las cantidades. */
+    document.dispatchEvent(new CustomEvent('carrito:actualizado'));
 }
 
 function actualizarBadge(carrito) {

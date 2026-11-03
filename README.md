@@ -43,11 +43,13 @@ el catálogo se lee de **Cloud Firestore** y el carrito se guarda en el
 ├── js/
 │   ├── datos/
 │   │   ├── firebase.js               Inicializa Firebase y exporta Firestore
-│   │   └── repositorioProductos.js   Único punto de acceso a los datos
+│   │   ├── repositorioProductos.js   Único punto de acceso a los datos
+│   │   └── repositorioSolicitudes.js Único módulo que escribe solicitudes
 │   ├── ui/
 │   │   └── formato.js                Formato de precios en es-MX
 │   ├── carrito.js                Carrito con localStorage y delegación de eventos
 │   ├── catalogo.js               Render del catálogo, filtros, búsqueda y modal
+│   ├── cotizacion.js             Resumen del carrito y envío de la solicitud
 │   ├── valoracion.js             Valoración por estrellas (las siete páginas)
 │   └── slider.js                 Slider de la portada
 ├── scripts/
