@@ -15,9 +15,9 @@ mueblería familiar en Tlajomulco de Zúñiga, Jalisco.
 ## Descripción
 
 El sitio presenta el catálogo de muebles de la tienda y permite al visitante
-armar un carrito y enviar una solicitud de cotización. No hay backend: el
-catálogo se dibuja a partir de un archivo de datos local y el carrito se
-guarda en el `localStorage` del navegador.
+armar un carrito y enviar una solicitud de cotización. No hay backend propio:
+el catálogo se lee de **Cloud Firestore** y el carrito se guarda en el
+`localStorage` del navegador.
 
 ## Estructura
 
@@ -30,7 +30,7 @@ guarda en el `localStorage` del navegador.
 ├── contacto.html                 Formulario de contacto, chat y mapa
 ├── cotizacion.html               Formulario de solicitud de cotización
 ├── preguntas-frecuentes.html     FAQ en acordeón de CSS puro
-├── products.json                 Fuente de datos del catálogo (12 productos)
+├── products.json                 Carga inicial de Firestore (12 productos); no se publica
 ├── css/
 │   ├── styles.css                Estilos compartidos por las siete páginas
 │   ├── carrito.css               Carrito: icono, badge, overlay y panel lateral
@@ -42,6 +42,7 @@ guarda en el `localStorage` del navegador.
 │   └── cotizacion.css            Estilos propios de Cotización
 ├── js/
 │   ├── datos/
+│   │   ├── firebase.js               Inicializa Firebase y exporta Firestore
 │   │   └── repositorioProductos.js   Único punto de acceso a los datos
 │   ├── ui/
 │   │   └── formato.js                Formato de precios en es-MX
@@ -49,6 +50,8 @@ guarda en el `localStorage` del navegador.
 │   ├── catalogo.js               Render del catálogo, filtros, búsqueda y modal
 │   ├── valoracion.js             Valoración por estrellas (las siete páginas)
 │   └── slider.js                 Slider de la portada
+├── scripts/
+│   └── cargar-productos.mjs      Carga products.json en Firestore (no se publica)
 ├── images/                       Imágenes del sitio
 └── videos/                       Videos de la promoción de temporada
 ```
@@ -79,18 +82,26 @@ Después abre `http://localhost:8000` en el navegador.
 
 ## Tecnologías
 
-HTML, CSS y JavaScript nativo con módulos ES. Sin frameworks, sin
-dependencias y sin paso de compilación.
+HTML, CSS y JavaScript nativo con módulos ES. Sin frameworks, sin bundler ni
+npm en el cliente y sin paso de compilación. El SDK de Firebase se carga desde
+un CDN.
 
 ## Fuente de datos
 
-Los doce productos del catálogo viven en `products.json`. Todo acceso a esos
+El catálogo se lee de la colección `productos` de **Cloud Firestore**. Cada
+documento es un producto y su ID es el `id` del producto. Todo acceso a esos
 datos pasa por `js/datos/repositorioProductos.js` y solo por ahí; ningún otro
-archivo lee el JSON directamente.
+archivo consulta Firestore directamente.
 
-Ese módulo expone funciones asíncronas aunque hoy la fuente sea local. Es
-deliberado: está prevista la migración a **Cloud Firestore** en un Sprint
-posterior, y cuando ocurra solo debe cambiar ese archivo.
+`products.json` ya no es la fuente del sitio: solo es el archivo de carga
+inicial que usa `scripts/cargar-productos.mjs` para llenar la colección. No se
+publica en Firebase Hosting.
+
+> [!WARNING]
+> Ejecutar `scripts/cargar-productos.mjs` **sobrescribe** los documentos que
+> tengan el mismo ID que un producto de `products.json`. Cualquier cambio hecho
+> a esos documentos desde la consola de Firebase se pierde. Los documentos con
+> otros IDs no se tocan.
 
 ## Pendiente
 

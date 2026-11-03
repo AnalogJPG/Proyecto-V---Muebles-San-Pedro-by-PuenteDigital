@@ -1,8 +1,12 @@
 /**
- * Catálogo: dibuja las tarjetas desde products.json, filtra por categoría,
- * abre el modal de detalle y agrega productos al carrito.
+ * Catálogo: dibuja las tarjetas con los productos que entrega el repositorio
+ * (hoy, la colección "productos" de Cloud Firestore), filtra por categoría y
+ * búsqueda, abre el modal de detalle y agrega productos al carrito.
  *
  * Solo lo usa catalogo.html.
+ *
+ * Si la carga falla, la cuadrícula muestra un mensaje de error en lugar de
+ * quedar vacía.
  *
  * Las tarjetas ya no existen en el HTML al cargar la página, así que no se
  * pueden enganchar listeners de uno en uno como antes. Todo lo que ocurre
@@ -125,6 +129,21 @@ function crearAvisoSinResultados(contenedor) {
 function mostrarSinResultados(contenedor, mostrar) {
     const aviso = contenedor.querySelector('#sinResultados');
     if (aviso) aviso.style.display = mostrar ? 'block' : 'none';
+}
+
+/**
+ * Si el catálogo no se pudo cargar, se dice en lugar de dejar la cuadrícula
+ * vacía. Reutiliza el estilo del aviso sin resultados, sin el botón.
+ */
+function mostrarErrorDeCarga(contenedor) {
+    const aviso = document.createElement('div');
+    aviso.className = 'catalogo-sin-resultados';
+
+    const texto = document.createElement('p');
+    texto.textContent = 'No pudimos cargar el catálogo. Intenta de nuevo más tarde.';
+
+    aviso.appendChild(texto);
+    contenedor.appendChild(aviso);
 }
 
 /** Devuelve el catálogo a "Todos" y sin término de búsqueda. */
@@ -367,7 +386,15 @@ export async function iniciarCatalogo() {
         terminoBusqueda = normalizarTexto(terminoInicial);
     }
 
-    const productos = await obtenerProductos();
+    let productos;
+    try {
+        productos = await obtenerProductos();
+    } catch (error) {
+        console.error(error);
+        mostrarErrorDeCarga(contenedor);
+        return;
+    }
+
     indexarParaBusqueda(productos);
     contenedor.innerHTML = productos.map(plantillaTarjeta).join('');
 

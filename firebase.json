@@ -6,6 +6,7 @@
       ".firebaserc",
       "firestore.rules",
       "firestore.indexes.json",
+      "products.json",
       "**/*.md",
       "**/.*",
       "**/.git/**",
