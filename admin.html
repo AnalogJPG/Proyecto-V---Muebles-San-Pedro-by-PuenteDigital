@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>Panel de administración - Muebles San Pedro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="images/logo.jpeg">
+    <link rel="shortcut icon" href="images/logo.jpeg">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin">
+
+    <!-- Mientras Firebase decide si hay sesión no se muestra ninguna vista. -->
+    <p id="adminCargando" class="admin-cargando" role="status">Cargando…</p>
+
+    <!-- VISTA: INICIO DE SESIÓN -->
+    <main id="vistaLogin" class="admin-login" hidden>
+        <div class="admin-login-tarjeta">
+            <img src="images/logo.jpeg" alt="Muebles San Pedro" class="admin-login-logo">
+            <h1>Iniciar sesión</h1>
+            <p class="admin-subtitulo">Acceso exclusivo para el personal de Muebles San Pedro</p>
+
+            <form id="formLogin" novalidate>
+                <div class="admin-campo">
+                    <label for="loginCorreo">Correo electrónico</label>
+                    <input type="email" id="loginCorreo" name="correo" autocomplete="username" required>
+                </div>
+
+                <div class="admin-campo">
+                    <label for="loginContrasena">Contraseña</label>
+                    <div class="admin-contrasena">
+                        <input type="password" id="loginContrasena" name="contrasena" autocomplete="current-password" required>
+                        <button type="button" id="btnMostrarContrasena" class="admin-boton-secundario" aria-controls="loginContrasena">Mostrar</button>
+                    </div>
+                </div>
+
+                <p id="loginError" class="admin-error" role="alert" hidden></p>
+                <p id="loginAviso" class="admin-exito" role="status" hidden></p>
+
+                <button type="submit" id="btnEntrar" class="admin-boton">Entrar</button>
+            </form>
+
+            <div class="admin-login-enlaces">
+                <button type="button" id="btnRecuperar" class="admin-enlace">¿Olvidaste tu contraseña?</button>
+                <a href="index.html" class="admin-enlace">Volver al sitio</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- VISTA: PANEL -->
+    <div id="vistaPanel" class="admin-panel" hidden>
+        <header class="admin-encabezado">
+            <h1>Muebles San Pedro · Panel de administración</h1>
+            <div class="admin-sesion">
+                <span id="adminCorreo" class="admin-correo"></span>
+                <button type="button" id="btnCerrarSesion" class="admin-boton-secundario">Cerrar sesión</button>
+            </div>
+        </header>
+
+        <!-- PESTAÑAS
+             Para agregar una sección, como Productos, basta un botón aquí con
+             data-seccion="productos" y una <section> con el mismo
+             data-seccion dentro de <main>. admin.js las alterna. -->
+        <nav class="admin-pestanas" aria-label="Secciones del panel">
+            <button type="button" class="admin-pestana" data-seccion="solicitudes" aria-current="page">Solicitudes</button>
+        </nav>
+
+        <main class="admin-contenido">
+            <section class="admin-seccion" data-seccion="solicitudes" aria-labelledby="tituloSolicitudes">
+                <h2 id="tituloSolicitudes" class="admin-titulo-seccion">Solicitudes de cotización</h2>
+
+                <div class="admin-filtros" role="group" aria-label="Filtrar solicitudes por estado">
+                    <button type="button" class="admin-filtro" data-filtro="todas" aria-pressed="true">Todas</button>
+                    <button type="button" class="admin-filtro" data-filtro="pendiente" aria-pressed="false" id="filtroPendientes">Pendientes (0)</button>
+                    <button type="button" class="admin-filtro" data-filtro="en_revision" aria-pressed="false">En revisión</button>
+                    <button type="button" class="admin-filtro" data-filtro="atendida" aria-pressed="false">Atendidas</button>
+                </div>
+
+                <div id="solicitudes" class="admin-solicitudes">
+                    <div id="listaSolicitudes" class="admin-lista" aria-live="polite"></div>
+                    <div id="detalleSolicitud" class="admin-detalle"></div>
+                </div>
+            </section>
+        </main>
+
+        <p id="avisoEstado" class="admin-aviso" role="status" hidden></p>
+    </div>
+
+    <script type="module" src="js/admin.js"></script>
+
+</body>
+</html>

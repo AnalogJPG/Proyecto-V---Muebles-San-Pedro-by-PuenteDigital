@@ -30,6 +30,7 @@ el catálogo se lee de **Cloud Firestore** y el carrito se guarda en el
 ├── contacto.html                 Formulario de contacto, chat y mapa
 ├── cotizacion.html               Formulario de solicitud de cotización
 ├── preguntas-frecuentes.html     FAQ en acordeón de CSS puro
+├── admin.html                    Panel de administración (sin enlace desde el sitio)
 ├── products.json                 Carga inicial de Firestore (12 productos); no se publica
 ├── css/
 │   ├── styles.css                Estilos compartidos por las siete páginas
@@ -39,12 +40,15 @@ el catálogo se lee de **Cloud Firestore** y el carrito se guarda en el
 │   ├── quienes-somos.css         Estilos propios de Quiénes Somos
 │   ├── contacto.css              Estilos propios de Contacto
 │   ├── preguntas-frecuentes.css  Estilos propios de FAQ
-│   └── cotizacion.css            Estilos propios de Cotización
+│   ├── cotizacion.css            Estilos propios de Cotización
+│   └── admin.css                 Estilos propios del panel de administración
 ├── js/
 │   ├── datos/
-│   │   ├── firebase.js               Inicializa Firebase y exporta Firestore
+│   │   ├── firebase.js               Inicializa Firebase y exporta la app y Firestore
+│   │   ├── autenticacion.js          Inicio de sesión del panel (único que carga Auth)
 │   │   ├── repositorioProductos.js   Único punto de acceso a los datos
-│   │   └── repositorioSolicitudes.js Único módulo que escribe solicitudes
+│   │   └── repositorioSolicitudes.js Único módulo que lee y escribe solicitudes
+│   ├── admin.js                  Sesión, lista y detalle de solicitudes del panel
 │   ├── ui/
 │   │   └── formato.js                Formato de precios en es-MX
 │   ├── carrito.js                Carrito con localStorage y delegación de eventos
@@ -104,6 +108,19 @@ publica en Firebase Hosting.
 > tengan el mismo ID que un producto de `products.json`. Cualquier cambio hecho
 > a esos documentos desde la consola de Firebase se pierde. Los documentos con
 > otros IDs no se tocan.
+
+## Panel de administración
+
+`admin.html` permite al personal iniciar sesión y revisar las solicitudes de
+cotización. No hay ningún enlace al panel desde el sitio público y la página
+lleva `noindex`, pero eso solo la saca de la vista y de los buscadores.
+
+> [!IMPORTANT]
+> **La ruta del panel no lo protege.** Cualquiera puede abrir `admin.html`.
+> Lo que protege las solicitudes es **Firebase Authentication**, que exige
+> iniciar sesión, junto con las **reglas de seguridad de Firestore**, que
+> deciden qué cuentas pueden leerlas y cambiar su estado. Si las reglas
+> permitieran leer `solicitudes` sin esa restricción, el panel no lo impediría.
 
 ## Pendiente
 

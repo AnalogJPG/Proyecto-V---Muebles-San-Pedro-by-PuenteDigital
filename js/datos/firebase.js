@@ -1,5 +1,7 @@
 /**
- * Conexión con Firebase: inicializa la app y expone la instancia de Firestore.
+ * Conexión con Firebase: inicializa la app y expone la app y la instancia de
+ * Firestore. La app la usa autenticacion.js, que es el único módulo que carga
+ * Authentication, para no sumar ese peso a las páginas públicas.
  *
  * El SDK se carga como módulos ES directamente desde gstatic, sin bundler ni
  * npm, porque el sitio es estático. Todos los módulos del SDK deben usar la
@@ -22,6 +24,6 @@ const configuracion = {
     appId: '1:142740598955:web:ea4f1c92c2a1dbf06987ee'
 };
 
-const app = initializeApp(configuracion);
+export const app = initializeApp(configuracion);
 
 export const db = getFirestore(app);
